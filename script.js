@@ -360,7 +360,7 @@ const skillTriggers = [
 const effects = [
     { id: "USE", text: "Use {Tag}" },
     { id: "HASTE", text: "Haste {Tag} for {Duration}" },
-    { id: "SLOW", text: "Slow a {Tag} for {Duration}" },
+    { id: "SLOW", text: "Slow {Tag} for {Duration}" },
     { id: "FREEZE", text: "Freeze {Tag} for {Duration}" },
     { id: "CRIT", text: "{Tag} gains Crit equal to {Value} for the fight" },
     { id: "START_FLY", text: "{Tag} starts Flying" },
