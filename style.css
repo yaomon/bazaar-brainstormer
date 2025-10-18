@@ -1,0 +1,274 @@
+/* --- Reset & Full Page Layout --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-top: 50px; /* adjust spacing from top if needed */
+    background: linear-gradient(145deg, #f1e8c2, #ded1af);
+    color: #3a3a3a;
+    font-family: 'Roboto', 'Segoe UI', sans-serif;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* --- Subtle Noise Overlay --- */
+body::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('noise.jpg');
+    background-position: 0 0;
+    background-repeat: repeat; /* tile the image */
+    content: "";
+    opacity: 0.07; /* subtle tactile effect */
+    pointer-events: none;
+}
+
+/* --- Page Title (Inset Text) --- */
+h1 {
+    margin-bottom: 30px;
+    color: #3a3a3a;
+    text-align: center;
+    text-shadow:
+        1px 1px 0 #fff6dc,
+       -1px -1px 0 #d8cba2,
+        1px -1px 0 #e6dfc5,
+       -1px 1px 0 #d2c7a1;
+    letter-spacing: 2px;
+    font-weight: 900;
+    font-size: 2.4rem;
+}
+
+button#generateBtn {
+    position: relative;
+    margin-bottom: 40px;
+    padding: 18px 36px;
+    border: none;
+    border-radius: 14px;
+
+    /* Base gradient for beige cassette-futurism */
+    background:
+        linear-gradient(145deg, #e5d0a4, #f0deb9),
+        url('noise.jpg');
+    background-size: cover;
+    background-repeat: repeat;
+
+    box-shadow:
+        0 6px 0 #b7a17d,           /* main shadow under button */
+        0 2px 6px rgba(0,0,0,0.25), /* soft ambient shadow */
+        inset 0 2px 4px rgba(255,255,255,0.4),  /* subtle highlight top */
+        inset 0 -2px 6px rgba(0,0,0,0.15);     /* subtle inner shadow bottom */
+
+    color: #3a3a3a;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+    font-weight: 600;
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: all 0.08s ease-in-out;
+    background-blend-mode: hard-light; /* makes noise overlay lightly */
+}
+
+button#generateBtn:active {
+    box-shadow:
+        0 2px 0 #b7a17d,
+        0 1px 4px rgba(0,0,0,0.2),
+        inset 0 2px 4px rgba(0,0,0,0.15),
+        inset 0 -2px 4px rgba(255,255,255,0.25);
+    transform: translateY(6px);
+}
+
+/* --- Output Container (Enhanced Purely Inset) --- */
+.output {
+    position: relative; /* sit above the noise */
+    z-index: 1;
+    padding: 30px 25px;
+    max-width: 520px;
+    width: 80%;
+    border-radius: 20px;
+
+    /* Slightly darker interior for proper inset */
+    background: linear-gradient(145deg, #d9d1b467, #e2d2be71);
+
+    /* purely inset with directional shading for depth */
+    box-shadow:
+        inset 4px 4px 8px rgba(0, 0, 0, 0.15),   /* bottom-right shadow (walls) */
+        inset -4px -4px 8px rgba(255, 255, 255, 0.1); /* top-left light */
+
+    transition: all 0.3s ease;
+}
+
+/* --- Output Text Styling --- */
+.output span {
+    display: block;
+    margin: 6px 0;
+    font-size: 1rem;
+}
+
+/* Name / Skill / Item Headers */
+span.name {
+    margin-bottom: 12px;
+    color: #5a4a3b;
+    text-shadow:
+        0.5px 0.5px 0 #fff6dc,
+       -0.5px -0.5px 0 #d8cba2,
+        0.5px -0.5px 0 #e6dfc5,
+       -0.5px 0.5px 0 #d2c7a1;
+    font-weight: 900;
+    font-size: 1.35rem;
+}
+
+/* Skill / Effect Text */
+span.skill, span.cd, span.size, span.rarity {
+    color: #3a3a3a;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+/* Prefixes for Item Properties */
+span.cd::before { content: "⏱️ "; }
+span.size::before { content: "📦 "; }
+span.rarity::before { content: "💎 "; }
+
+/* --- Keywords Highlighted Background --- */
+span[class^="keyword-"] {
+    display: inline-block;
+    padding: 1px 6px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 6%;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 6%;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    color: #413d3d; /* solid readable text */
+    text-shadow: 0px 0px 1px rgba(0,0,0,0.1);
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.4;
+    transition: all 0.3s ease;
+}
+
+
+/* --- Keyframes for smooth gradient animation --- */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- Gradients per keyword (lighter / subtle / cassette-style) --- */
+.keyword-Any { background: linear-gradient(60deg, #f0e8d466, #e0d7b8AA); }
+.keyword-Lifesteal { background: linear-gradient(60deg, #e8c9a566, #d6a87eAA); }
+.keyword-Enchanted { background: linear-gradient(60deg, #e4c8e066, #cfa3d4AA); }
+.keyword-Property { background: linear-gradient(60deg, #e0d9b766, #cbbf96AA); }
+.keyword-Properties { background: linear-gradient(60deg, #e0d9b766, #cbbf96AA); }
+.keyword-Friend { background: linear-gradient(60deg, #d9e2b466, #a8b980AA); }
+.keyword-Aquatic { background: linear-gradient(60deg, #a3d0b366, #74a686AA); }
+.keyword-Regen { background: linear-gradient(60deg, #a9d7a266, #6da76dAA); }
+.keyword-Haste { background: linear-gradient(60deg, #a9d7a266, #6da76dAA); }
+.keyword-Heal { background: linear-gradient(60deg, #b1e0a966, #7fb67aAA); }
+.keyword-Shield { background: linear-gradient(60deg, #80b8e266, #4d7d9cAA); }
+.keyword-Weapon { background: linear-gradient(60deg, #e3b39a66, #c78c74AA); }
+.keyword-Small { background: linear-gradient(60deg, #94b6d966, #58758cAA); }
+.keyword-Medium { background: linear-gradient(60deg, #78c09766, #3b7153AA); }
+.keyword-Large { background: linear-gradient(60deg, #e0a89e66, #c77c72AA); }
+.keyword-Flying { background: linear-gradient(60deg, #7bd0c566, #3b7b6eAA); }
+.keyword-Freeze { background: linear-gradient(60deg, #94c7e266, #4b7fa6AA); }
+.keyword-Slow { background: linear-gradient(60deg, #e5c48266, #c7a95cAA); }
+.keyword-Charge { background: linear-gradient(60deg, #7ac0c066, #488c8aAA); }
+.keyword-Enchant { background: linear-gradient(60deg, #c89dd966, #98648cAA); }
+.keyword-Poison { background: linear-gradient(60deg, #b38ac066, #7b5493AA); }
+.keyword-Burn { background: linear-gradient(60deg, #e6a18f66, #c77a6cAA); }
+.keyword-Crit { background: linear-gradient(60deg, #ebb18d66, #c78f6cAA); }
+.keyword-Destroy { background: linear-gradient(60deg, #d98a8a66, #b86b6bAA); }
+.keyword-Multicast { background: linear-gradient(60deg, #f0c89266, #c7955cAA); }
+.keyword-Size { background: linear-gradient(60deg, #76c5a366, #3b7d58AA); }
+.keyword-Rarity { background: linear-gradient(60deg, #f3db8d66, #c8b369AA); }
+.keyword-Bronze { background: linear-gradient(60deg, #d9b18a66, #a9865cAA); }
+.keyword-Silver { background: linear-gradient(60deg, #cfd6d566, #939d98AA); }
+.keyword-Gold { background: linear-gradient(60deg, #f5e18866, #c9b26cAA); }
+.keyword-Legendary { background: linear-gradient(60deg, #c78bcf66, #925b91AA); }
+.keyword-Reload { background: linear-gradient(60deg, #c78bcf66, #925b91AA); }
+.keyword-Ammo { background: linear-gradient(60deg, #d0b4a166, #a68c76AA); }
+.keyword-Core { background: linear-gradient(60deg, #e1d18e66, #b7a761AA); }
+.keyword-Dinosaur { background: linear-gradient(60deg, #c7a97d66, #8c6f49AA); }
+.keyword-Food { background: linear-gradient(60deg, #f3d7a466, #caa877AA); }
+.keyword-Potion { background: linear-gradient(60deg, #c7b4e066, #8c74b4AA); }
+.keyword-Quest { background: linear-gradient(60deg, #d9c99266, #a69c6cAA); }
+.keyword-Ray { background: linear-gradient(60deg, #d0e0e466, #8cb2b6AA); }
+.keyword-Tech { background: linear-gradient(60deg, #c2d6e066, #7b95a6AA); }
+.keyword-Tool { background: linear-gradient(60deg, #d0c9b766, #99896cAA); }
+.keyword-Toy { background: linear-gradient(60deg, #e8c9a666, #b78c7aAA); }
+.keyword-Vehicle { background: linear-gradient(60deg, #d1d0b466, #94936cAA); }
+.keyword-Destroyed { background: linear-gradient(60deg, #d0c9b766, #99896cAA); }
+.keyword-Health { background: linear-gradient(60deg, #e8c9a666, #b78c7aAA); }
+.keyword-Neutral { background: linear-gradient(60deg, #d0c9b766, #99896cAA); }
+.keyword-Cooldown { background: linear-gradient(60deg, #e8c9a666, #b78c7aAA); }
+
+/* --- Responsive tweaks --- */
+@media (max-width: 480px) {
+    h1 { margin: 15px 10px; font-size: 1.8rem; }
+    button#generateBtn { padding: 12px 24px; font-size: 1rem; }
+    .output { padding: 20px; }
+}
+
+/* --- Footer Credit --- */
+footer {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    z-index: 2;
+    color: #3a3a3a;
+    text-align: center;
+    font-size: 0.95rem;
+    transform: translateX(-50%);
+}
+
+/* Base style for credit link - subtle inset, no raised border */
+footer a.credit {
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: linear-gradient(145deg, #e6dfc5, #dcd4b8);
+    box-shadow:
+        inset 0.5px 0.5px 2px #b7ad8f,
+        inset -0.5px -0.5px 2px #fff6dc;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+footer a.credit:hover {
+    background: linear-gradient(145deg, #dcd4b8, #e6dfc5);
+    box-shadow:
+        inset 0.5px 0.5px 2px #b7ad8f,
+        inset -0.5px -0.5px 2px #fff6dc;
+    transform: translateY(1px);
+}
+
+.credit-handle {
+    position: relative;
+    display: inline-block;
+    padding: 1px 9px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 10%;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 10%;
+    background: -webkit-linear-gradient(0deg, rgba(255, 115, 0, 0.00), rgba(125, 14, 14, 0.591));
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    color: rgb(255, 255, 255);
+    text-shadow: 0px 0px 2px rgb(122, 14, 14);
+        font-weight: 800;
+        font-size: 1rem;
+    line-height: 1.65;
+}
