@@ -1,3 +1,177 @@
+// Function to create a sand burst effect
+function createSandBurst(x, y) {
+    const burstParticles = 25;
+    for (let i = 0; i < burstParticles; i++) {
+        const angle = (Math.PI * 2 * i) / burstParticles;
+        const speed = Math.random() * 2 + 3;
+        const p = {
+            x: x,
+            y: y,
+            r: Math.random() * 2.5 + 1.0,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            alpha: Math.random() * 0.65 + 0.35,
+            angularVel: (Math.random() - 0.5) * 0.2,
+            angle: Math.random() * Math.PI * 2,
+            life: 1.0, // Will decrease over time
+        };
+        sandParticles.push(p);
+    }
+}
+
+// Initialize sand particles array globally
+let sandParticles = [];
+
+// --- Blowing Sand Effect ---
+$(function () {
+    // Create canvas overlay
+    const sandCanvas = $('<canvas id="sandCanvas"></canvas>').css({
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        pointerEvents: "none",
+        zIndex: 100,
+        opacity: 0.38, // Increased opacity for better visibility
+        mixBlendMode: "overlay", // Changed blend mode for better contrast
+        backgroundColor: "rgba(220, 200, 160, 0.08)", // Added slight tint
+    });
+
+    // Force append to body at the top level
+    if ($("#sandCanvas").length === 0) {
+        $("body").prepend(sandCanvas);
+        console.log("Sand canvas created and prepended to body");
+    }
+
+    function resizeCanvas() {
+        const canvas = document.getElementById("sandCanvas");
+        // Set width/height attributes, not just CSS
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    $(window).on("resize", resizeCanvas);
+
+    // Sand particle config
+    const NUM_SAND = 180; // Increased number of particles
+
+    // Wind effect parameters
+    let windForce = 0;
+    let targetWindForce = 0;
+    let lastWindChange = Date.now();
+
+    function updateWind() {
+        const now = Date.now();
+        if (now - lastWindChange > 2000) {
+            // Change wind every 2 seconds
+            targetWindForce = (Math.random() * 2 - 1) * 0.8; // Random target between -0.8 and 0.8
+            lastWindChange = now;
+        }
+        // Smoothly interpolate current wind force
+        windForce += (targetWindForce - windForce) * 0.02;
+    }
+
+    // Create particles with varied properties
+    for (let i = 0; i < NUM_SAND; i++) {
+        sandParticles.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 2.5 + 1.0, // More varied sizes
+            vx: Math.random() * 1.2 + 0.3, // Faster base speed
+            vy: Math.random() * 0.4 - 0.2, // More vertical variation
+            alpha: Math.random() * 0.65 + 0.35, // Varied opacity
+            angularVel: (Math.random() - 0.5) * 0.1, // Rotation speed
+            angle: Math.random() * Math.PI * 2, // Current rotation angle
+        });
+    }
+
+    function drawSand() {
+        const canvas = document.getElementById("sandCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw particles with rotation and elongation
+        for (let p of sandParticles) {
+            ctx.save();
+            ctx.globalAlpha = p.alpha;
+
+            // Move to particle position
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.angle);
+
+            // Draw elongated particle
+            ctx.beginPath();
+            ctx.ellipse(
+                0,
+                0,
+                p.r * (1 + Math.abs(windForce)),
+                p.r * 0.8,
+                0,
+                0,
+                Math.PI * 2
+            );
+
+            // Create gradient for particle
+            const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, p.r * 2);
+            gradient.addColorStop(0, "rgba(235, 215, 175, 0.98)");
+            gradient.addColorStop(1, "rgba(235, 215, 175, 0)");
+
+            ctx.fillStyle = gradient;
+            ctx.shadowColor = "rgba(235, 215, 175, 0.45)";
+            ctx.shadowBlur = 9;
+            ctx.fill();
+
+            // Add directional motion blur based on velocity
+            ctx.strokeStyle = "rgba(235, 215, 175, 0.15)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-p.vx * 3, -p.vy * 3);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+    }
+
+    function animateSand() {
+        const canvas = document.getElementById("sandCanvas");
+        if (!canvas) {
+            console.error("Sand canvas not found!");
+            return;
+        }
+
+        // Update wind parameters
+        updateWind();
+
+        for (let p of sandParticles) {
+            // Base movement
+            const time = Date.now();
+            const windEffect = Math.sin(time / 1000 + p.y / 60) * 0.3;
+
+            // Apply wind force
+            p.x += p.vx + windEffect + windForce;
+            p.y += p.vy + Math.cos(time / 1200 + p.x / 80) * 0.15;
+
+            // Update particle rotation
+            p.angle += p.angularVel + windForce * 0.1;
+
+            // Wrap around edges with a buffer
+            if (p.x > window.innerWidth + p.r) p.x = -p.r;
+            if (p.x < -p.r) p.x = window.innerWidth + p.r;
+            if (p.y > window.innerHeight + p.r) p.y = -p.r;
+            if (p.y < -p.r) p.y = window.innerHeight + p.r;
+        }
+        drawSand();
+        requestAnimationFrame(animateSand);
+    }
+
+    // Start animation after a small delay to ensure DOM is ready
+    setTimeout(() => {
+        console.log("Starting sand animation");
+        animateSand();
+    }, 100);
+});
 // Utility random helpers
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const chance = (p) => Math.random() < p;
@@ -151,7 +325,7 @@ function generatePassiveValue(attr) {
 
 function generatePassive(tag) {
     // Pick a random attribute
-    const attribute = pick(passiveAttributes);
+    let attribute = pick(passiveAttributes);
 
     // Base value
     let value = generatePassiveValue(attribute);
@@ -1516,61 +1690,82 @@ function generateSkillName(effect) {
 
 // --- Main Generator ---
 function generate() {
-    const isItem = chance(0.5); // 50% chance to generate item
-    const isPassive = chance(0.3); // 30% chance for this to be passive
-    let text = "";
+    const output = document.getElementById("output");
 
-    if (isPassive) {
-        // Pick a tag for the passive (we can pick from keyWords or a generic tag)
-        const tag = getTagText();
-        const passiveObj = generatePassive(tag);
+    // Add updating class for spring animation
+    output.classList.add("updating");
 
-        if (isItem) {
-            // Passive Item: no cooldown or multicast
-            const itemSize = pick(["Small", "Medium", "Large"]);
-            const itemRarity = pick(["Bronze", "Silver", "Gold", "Legendary"]);
-            const itemName = generateItemName(
-                passiveObj.baseText,
-                0,
-                itemSize,
-                itemRarity
-            );
-            text = `
+    // Reset all animations by removing and re-adding output content after a tiny delay
+    output.style.height = output.offsetHeight + "px";
+    output.innerHTML = "";
+
+    // Short delay to ensure animation triggers
+    setTimeout(() => {
+        const isItem = chance(0.5); // 50% chance to generate item
+        const isPassive = chance(0.3); // 30% chance for this to be passive
+        let text = "";
+
+        if (isPassive) {
+            // Pick a tag for the passive (we can pick from keyWords or a generic tag)
+            const tag = getTagText();
+            const passiveObj = generatePassive(tag);
+
+            if (isItem) {
+                // Passive Item: no cooldown or multicast
+                const itemSize = pick(["Small", "Medium", "Large"]);
+                const itemRarity = pick([
+                    "Bronze",
+                    "Silver",
+                    "Gold",
+                    "Legendary",
+                ]);
+                const itemName = generateItemName(
+                    passiveObj.baseText,
+                    0,
+                    itemSize,
+                    itemRarity
+                );
+                text = `
                 <span class='name'><b>Item (Passive):</b> ${itemName}<br></span>
                 <span class='size'><b>Size:</b> ${itemSize}<br></span>
                 <span class='rarity'><b>Rarity:</b> ${itemRarity}<br></span>
                 <span class='desc'>${passiveObj.baseText}.<br></span>
             `;
-        } else {
-            // Passive Skill: just the passive text
-            const skillName = generateSkillName(passiveObj.baseText);
-            text = `
+            } else {
+                // Passive Skill: just the passive text
+                const skillName = generateSkillName(passiveObj.baseText);
+                text = `
                 <span class='name'><b>Skill (Passive):</b> ${skillName}<br></span>
                 <span class='desc'>
                     ${passiveObj.baseText}
                 .<br></span>
             `;
-        }
-    } else {
-        // Regular skill/item generation
-        let effect = generateEffect();
+            }
+        } else {
+            // Regular skill/item generation
+            let effect = generateEffect();
 
-        if (isItem) {
-            effect = effect.charAt(0).toUpperCase() + effect.slice(1);
-            const itemCd = (Math.floor(Math.random() * 30) + 1) * 0.5; // 0.5 to 15.0
-            const itemSize = pick(["Small", "Medium", "Large"]);
-            const itemRarity = pick(["Bronze", "Silver", "Gold", "Legendary"]);
-            const itemMultiCast = pick(["", "2", "3", "4"]);
-            const itemName = generateItemName(
-                effect,
-                itemCd,
-                itemSize,
-                itemRarity
-            );
-            const multicastHtml = itemMultiCast
-                ? `<span class='multicast'>⚔️ <b>Multicast</b> x${itemMultiCast}<br></span>`
-                : "";
-            text = `
+            if (isItem) {
+                effect = effect.charAt(0).toUpperCase() + effect.slice(1);
+                const itemCd = (Math.floor(Math.random() * 30) + 1) * 0.5; // 0.5 to 15.0
+                const itemSize = pick(["Small", "Medium", "Large"]);
+                const itemRarity = pick([
+                    "Bronze",
+                    "Silver",
+                    "Gold",
+                    "Legendary",
+                ]);
+                const itemMultiCast = pick(["", "2", "3", "4"]);
+                const itemName = generateItemName(
+                    effect,
+                    itemCd,
+                    itemSize,
+                    itemRarity
+                );
+                const multicastHtml = itemMultiCast
+                    ? `<span class='multicast'>⚔️ <b>Multicast</b> x${itemMultiCast}<br></span>`
+                    : "";
+                text = `
                 <span class='name'><b>Item:</b> ${itemName}<br></span>
                 <span class='cd'><b>CD:</b> ${
                     itemCd.toFixed(1) + "s"
@@ -1580,17 +1775,27 @@ function generate() {
                 <span class='desc'>${effect}.<br></span>
                 ${multicastHtml}
             `;
-        } else {
-            const skillName = generateSkillName(effect);
-            let trigger = generateTrigger();
-            text = `
+            } else {
+                const skillName = generateSkillName(effect);
+                let trigger = generateTrigger();
+                text = `
                 <span class='name'>Skill: ${skillName}<br></span>
                 <span class='desc'>${trigger} ${effect}.<br></span>
             `;
+            }
         }
-    }
 
-    $("#output").html(text);
+        // Create sand burst effect
+        const rect = output.getBoundingClientRect();
+        createSandBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+        // Update content
+        $("#output").html(text);
+
+        // Remove updating class to trigger spring animation
+        output.classList.remove("updating");
+        output.style.height = "auto";
+    }, 50);
 }
 
 function generateTrigger() {

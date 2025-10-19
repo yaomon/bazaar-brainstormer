@@ -138,9 +138,20 @@ button#generateBtn:active {
     padding: 9px;
     max-width: 520px;
     width: 80%;
-    box-shadow:
-        -2px -2px 8px rgba(0,0,0,0.1),
-        2px 2px 4px rgba(241, 232, 219, 0.65);
+    box-shadow:        -2px -2px 8px rgba(0,0,0,0.1),        2px 2px 4px rgba(241, 232, 219, 0.65);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    -webkit-transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    -moz-transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    -ms-transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    -o-transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Enhanced spring animation for size changes */
+    transition:
+        height 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+        transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center top;
+    will-change: transform, height, opacity;
 }
 
 .outputContainer {
@@ -153,22 +164,67 @@ button#generateBtn:active {
 
 /* --- Output Container (Enhanced Purely Inset) --- */
 .output {
-    position: relative; /* sit above the noise */
+    position: relative;
     z-index: 1;
+    overflow: hidden;
     box-sizing: border-box;
     padding: 30px 25px;
     width: 100%;
     border-radius: 20px;
-
-    /* Slightly darker interior for proper inset */
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
     background: linear-gradient(145deg, #d9d1b467, #e2d2be71);
-
-    /* purely inset with directional shading for depth */
     box-shadow:
         inset 4px 4px 20px rgba(0, 0, 0, 0.25),
         inset -4px -4px 20px rgba(255, 239, 224, 0.8);
 
-    transition: all 0.3s ease;
+    /* Enhanced spring animation for size changes */
+    transition:
+        height 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+        transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center top;
+    will-change: transform, height, opacity;
+}
+
+/* Improved updating state animation */
+.output.updating {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+}
+
+/* Text fade in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animate child elements */
+.output span {
+    opacity: 0;
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Staggered animation delays */
+.output span:nth-child(1) { animation-delay: 0.1s; }
+.output span:nth-child(2) { animation-delay: 0.2s; }
+.output span:nth-child(3) { animation-delay: 0.3s; }
+.output span:nth-child(4) { animation-delay: 0.4s; }
+.output span:nth-child(5) { animation-delay: 0.5s; }
+.output span:nth-child(6) { animation-delay: 0.6s; }
+
+/* Animate keywords */
+.output span[class^="keyword-"] {
+    animation: fadeIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    animation-delay: 0.3s;
 }
 
 /* --- Output Text Styling --- */
