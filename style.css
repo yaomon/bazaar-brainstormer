@@ -88,7 +88,7 @@ button#generateBtn {
     border-radius: 14px;
     /* Base gradient for beige cassette-futurism */
     background:
-        linear-gradient(145deg, #e6dbb1, #f0e6c0),
+        linear-gradient(145deg, #eddfc0, #f2e1c7),
         url('noise.jpg');
     background-size: cover;
     background-repeat: repeat;
