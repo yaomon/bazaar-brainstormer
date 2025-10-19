@@ -12,7 +12,7 @@ body {
     flex-direction: column;
     overflow: hidden;
     padding-top: 50px; /* adjust spacing from top if needed */
-    background: linear-gradient(145deg, #f1e8c2, #ded1af);
+    background: linear-gradient(145deg, #f1e7c4, #dbbca0);
     color: #3a3a3a;
     font-family: 'Roboto', 'Segoe UI', sans-serif;
     align-items: center;
@@ -31,46 +31,75 @@ body::before {
     background-position: 0 0;
     background-repeat: repeat; /* tile the image */
     content: "";
-    opacity: 0.07; /* subtle tactile effect */
+    opacity: 0.13; /* subtle tactile effect */
     pointer-events: none;
 }
 
 /* --- Page Title (Inset Text) --- */
 h1 {
     margin-bottom: 30px;
-    color: #3a3a3a;
+    color: #3a3a3ae3;
     text-align: center;
     text-shadow:
         1px 1px 0 #fff6dc,
        -1px -1px 0 #d8cba2,
         1px -1px 0 #e6dfc5,
        -1px 1px 0 #d2c7a1;
-    letter-spacing: 2px;
     font-weight: 900;
     font-size: 2.4rem;
 }
 
+.mainContainer {
+    position: relative; /* sit above the noise */
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.buttonContainer, .buttonContainerContainer, .outputContainerContainer, .outputContainer {
+    box-sizing: border-box;
+    border-radius: 16px;
+}
+
+.buttonContainer {
+    padding: 6px;
+    padding-bottom: 9px;
+    box-shadow:
+        2px 2px 4px rgba(0,0,0,0.15),
+        -2px -2px 4px rgba(255, 250, 224, 0.45);
+}
+
+.buttonContainerContainer {
+    margin-bottom: 40px;
+    padding: 1px;
+    padding-bottom: 4px;
+    box-shadow:
+        -2px -2px 8px rgba(0,0,0,0.15),
+        2px 2px 4px rgba(255, 253, 240, 0.55);
+}
+
 button#generateBtn {
     position: relative;
-    margin-bottom: 40px;
     padding: 18px 36px;
     border: none;
     border-radius: 14px;
-
     /* Base gradient for beige cassette-futurism */
     background:
-        linear-gradient(145deg, #e5d0a4, #f0deb9),
+        linear-gradient(145deg, #e6dbb1, #f0e6c0),
         url('noise.jpg');
     background-size: cover;
     background-repeat: repeat;
 
     box-shadow:
-        0 6px 0 #b7a17d,           /* main shadow under button */
-        0 2px 6px rgba(0,0,0,0.25), /* soft ambient shadow */
-        inset 0 2px 4px rgba(255,255,255,0.4),  /* subtle highlight top */
-        inset 0 -2px 6px rgba(0,0,0,0.15);     /* subtle inner shadow bottom */
+        0 3px 0 #9f836c,           /* main shadow under button */
+        0 1px 2px rgba(0,0,0,0.25), /* soft ambient shadow */
+        inset 0 2px 4px rgba(255,255,255,0.6),  /* subtle highlight top */
+        inset 0 -2px 6px rgba(0,0,0,0.25);     /* subtle inner shadow bottom */
 
-    color: #3a3a3a;
+    color: #3a3a3ad4;
     text-shadow: 0 1px 0 rgba(255,255,255,0.3);
     font-weight: 600;
     font-size: 1.15rem;
@@ -79,22 +108,56 @@ button#generateBtn {
     background-blend-mode: hard-light; /* makes noise overlay lightly */
 }
 
-button#generateBtn:active {
+button#generateBtn::before {
+    position: absolute;
+    top: 15%;
+    left: 5%;
+    width: 90%;
+    height: 70%;
+    border-radius: 14px;
     box-shadow:
-        0 2px 0 #b7a17d,
-        0 1px 4px rgba(0,0,0,0.2),
-        inset 0 2px 4px rgba(0,0,0,0.15),
-        inset 0 -2px 4px rgba(255,255,255,0.25);
-    transform: translateY(6px);
+        inset 0 4px 14px rgba(0, 0, 0, 0.1),  /* subtle shadow inside */
+        inset 0 -4px 14px rgba(249, 255, 199, 0.4),  /* subtle highlight inside */
+        0 -2px 4px rgba(0, 0, 0, 0.2),  /* subtle shadow around */
+        0 2px 4px rgba(250, 255, 203, 0.4);  /* subtle highlight under */
+    content: "";
+    pointer-events: none;
+
+}
+
+button#generateBtn:active {
+    box-shadow:        0 1px 0 #b7a17d,        0 1px 4px rgba(0,0,0,0.2),        inset 0 2px 4px rgba(0,0,0,0.15),        inset 0 -2px 4px rgba(255,255,255,0.25);
+    transform: translateY(2px);
+    -webkit-transform: translateY(2px);
+    -moz-transform: translateY(2px);
+    -ms-transform: translateY(2px);
+    -o-transform: translateY(2px);
+}
+
+.outputContainerContainer {
+    padding: 9px;
+    max-width: 520px;
+    width: 80%;
+    box-shadow:
+        -2px -2px 8px rgba(0,0,0,0.1),
+        2px 2px 4px rgba(241, 232, 219, 0.65);
+}
+
+.outputContainer {
+    padding: 9px;
+    width: 100%;
+    box-shadow:
+        5px 5px 24px rgba(0,0,0,0.25),
+        -5px -5px 24px rgb(255, 250, 226);
 }
 
 /* --- Output Container (Enhanced Purely Inset) --- */
 .output {
     position: relative; /* sit above the noise */
     z-index: 1;
+    box-sizing: border-box;
     padding: 30px 25px;
-    max-width: 520px;
-    width: 80%;
+    width: 100%;
     border-radius: 20px;
 
     /* Slightly darker interior for proper inset */
@@ -102,8 +165,8 @@ button#generateBtn:active {
 
     /* purely inset with directional shading for depth */
     box-shadow:
-        inset 4px 4px 8px rgba(0, 0, 0, 0.15),   /* bottom-right shadow (walls) */
-        inset -4px -4px 8px rgba(255, 255, 255, 0.1); /* top-left light */
+        inset 4px 4px 20px rgba(0, 0, 0, 0.25),
+        inset -4px -4px 20px rgba(255, 239, 224, 0.8);
 
     transition: all 0.3s ease;
 }
@@ -118,7 +181,7 @@ button#generateBtn:active {
 /* Name / Skill / Item Headers */
 span.name {
     margin-bottom: 12px;
-    color: #5a4a3b;
+    color: #5a4a3bde;
     text-shadow:
         0.5px 0.5px 0 #fff6dc,
        -0.5px -0.5px 0 #d8cba2,
@@ -130,7 +193,7 @@ span.name {
 
 /* Skill / Effect Text */
 span.skill, span.cd, span.size, span.rarity {
-    color: #3a3a3a;
+    color: #3a3a3ae2;
     font-weight: 500;
     font-size: 1rem;
 }
