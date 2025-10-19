@@ -173,6 +173,13 @@ function generatePassive(tag) {
         if (reliantText) {
             // If we use a reliant value, display it instead of numeric value
             value = reliantText + " as";
+            // If attribute is Cooldown or % Cooldown, prepend randomly 'reduction' or 'increase' after attribute
+            if (attribute === "Cooldown" || attribute === "% Cooldown") {
+                const cdMod = pick(["reduction", "increase"]);
+                // Insert the modifier after the attribute
+                // e.g. "has X as Cooldown reduction"
+                attribute = attribute + " " + cdMod;
+            }
         }
     }
 
@@ -1363,8 +1370,11 @@ function generateItemName(effect, itemCd, itemSize, itemRarity) {
         `${noun}`,
     ]);
 
-    // Capitalize first letter cleanly
-    return pattern.trim().replace(/\s+/g, " ");
+    // Capitalize first letter cleanly and remove stray quotes
+    let cleanPattern = pattern.trim().replace(/\s+/g, " ");
+    // Remove trailing or double quotes
+    cleanPattern = cleanPattern.replace(/"+$/, "");
+    return cleanPattern;
 }
 
 function generateSkillName(effect) {
